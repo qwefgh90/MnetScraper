@@ -1,0 +1,6 @@
+dict = [{name:'창원',gender:'남'
+,useralbum:{'music':{'songIndex':songIndex,'artist':artist,'songName':songName,'albumIndex':album_index}
+,'album':{'albumIndex':album_index,'albumName':album_name,'albumLink':album_link}}}
+
+,....
+]

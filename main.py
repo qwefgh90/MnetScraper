@@ -6,6 +6,7 @@ __author__ = 'changwoncheo'
 #앨범 사진
 #http://www.melon.com/album/detail.htm?albumId=2264797
 from setting import *
+from lib1_chang import *
 import requests as req
 from bs4 import BeautifulSoup as bs
 
@@ -21,7 +22,6 @@ def makeMusicElement(tr_list):
         albumimg_link = getImage(albumidx)#이미지 링크
         albumimg_name = reobj_filename.findall(albumimg_link)[0]#이미지 이름
         downloadSaveImage(albumimg_link,albumimg_name); #이미지 링크와 이미지 이름
-
         songname = tapNewlineStrip(songname)
         artist = tapNewlineStrip(artist)
         album = tapNewlineStrip(album)
@@ -38,21 +38,12 @@ def downloadSaveImage(url,filename):
     try:
         print filename +' ',
         resp = req.request('get',url)
-        resp.content
         with open('album/'+filename,'wb') as obj:    #사진 저장
             obj.write(resp.content)
     except Exception, e:
         print '이미지 다운로드 저장 실패\n'+str(e)
 
-def tapNewlineStrip(str):
-    return str.encode('utf-8').replace('\n','').replace('\t','')
-
-def writeJson(fileName,dict):
-    import json
-    with open(fileName, 'w') as outfile:
-        json.dump(dict, outfile, ensure_ascii = False, encoding = 'utf-8')
-
-if __name__ == '__main__':
+def getGenre(): #한국 가요 장르별
     for i in xrange(102,111):
         resp = req.request('get','http://www.melon.com/genre/song_listPaging.htm?startIndex=1&pageSize=150&classicMenuId=DP0100'+'&subMenuId=DP0'+str(i)+'&orderBy=ORDER_ISSUE_DATE')
         soup = bs(resp.content,from_encoding="utf-8")   #meta charset 이 없을 경우 직접 인코딩을 알려준다.
@@ -64,4 +55,8 @@ if __name__ == '__main__':
         print('추출 개수 : ' + str(len(music_set))+'개')
         writeJson(category[i],music_set);
         print category[i]
+
+if __name__ == '__main__':
+    #getGenre()
+    dj_json_list = getMusicFromDJWithMnet()
 
