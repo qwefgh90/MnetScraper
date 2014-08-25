@@ -36,7 +36,10 @@ def getMusicFromOneDJ(url): #DJ에서 음악 리스트 반환 #http://mnet.inter
             album_name = albumAnchorTag.get_text()  #앨범이름
             album_index = int(reobjAlbumIndex.findall(album_link)[0]) #mnet 기준 인덱스
             genre,album_date,imgSrc = getAlbumInfoWithMNET(album_link)
-            downloadSaveImageWithMNET(imgSrc,reobj_filename.findall(imgSrc)[0])
+            if(downloadSaveImageWithMNET(imgSrc,reobj_filename.findall(imgSrc)[0])==False):
+                #이미지가 존재하지 않을 경우, 추후 이미지 다운로드
+                pass
+
             musicItem = {'music':{'songIndex':songIndex,'artist':artist.encode('utf-8'),'songName':songName.encode('utf-8')
                 ,'albumIndex':album_index}
                 ,'album':{'albumIndex':album_index,'albumName':album_name.encode('utf-8'),'albumLink':album_link.encode('utf-8')
@@ -46,11 +49,11 @@ def getMusicFromOneDJ(url): #DJ에서 음악 리스트 반환 #http://mnet.inter
             logger.warning(GetException()),
     return {'name':userName.encode('utf-8'),'gender':userGender.encode('utf-8'),'userAlbum':listOfMusicAndAlbum}
 #1000명의 DJ를 뽑아오기 위해 20개의 페이지를 탐색
-def getMusicFromDJWithMnet():
+def getMusicFromDJWithMnet(startIdx,endIdx,step):
     dj_result_list = []
-    for page in xrange(1,21,1): #페이지 탐색
+    for page in xrange(startIdx,endIdx,step): #페이지 탐색
         url = 'http://mnet.interest.me/playlist/playlist_list.asp?part=kpop&srt=2&pNum='+str(page)
-        logger.debug('[DJLISTPAGE] '+url)
+        logger.debug('['+str(threading.current_thread())+'][DJLISTPAGE] '+url)
         resp = req.request('get',url)
         dj_page = bs(resp.content,from_encoding='utf-8')
         title_generator = (i.find(class_='title') for i in dj_page.find_all(class_='album_info'))
@@ -63,8 +66,8 @@ def getMusicFromDJWithMnet():
                 logger.debug(str(DJInfo['name']) + ':'+str(DJInfo['gender'])+ ':' + str(DJInfo['userAlbum'][0]))
             except Exception,e :
                 logger.warning(GetException()),
-
-            writeJson('crawlpage/mnetDJpage'+str(page)+'.JSON',DJInfo)
+            print '['+str(page)+'] '+str(DJInfo)
+            #writeJson('crawlpage/mnetDJpage'+str(page)+'.JSON',DJInfo)
         logger.debug('[Write] mnetDJpage'+str(page)+'.JSON')
         writeJson('crawlpage/mnetDJpage'+str(page)+'.JSON',dj_result_list)
         dj_result_list=[]

@@ -1,7 +1,8 @@
 __author__ = 'changwoncheo'
 # -*- coding: utf-8 -*-
+import threading
 import logging
-logging.basicConfig(filename='crawl.log',level=logging.DEBUG)
+logging.basicConfig(filename='crawl2.log',level=logging.DEBUG)
 class NoParsingFilter(logging.Filter):
     def filter(self, record):
         msg = record.getMessage()

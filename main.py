@@ -58,5 +58,11 @@ def getGenre(): #한국 가요 장르별
 
 if __name__ == '__main__':
     #getGenre()
-    dj_json_list = getMusicFromDJWithMnet()
+    threading.Thread(target=getMusicFromDJWithMnet,args=(9,11,1)).start()
+    threading.Thread(target=getMusicFromDJWithMnet,args=(11,13,1)).start()
+    threading.Thread(target=getMusicFromDJWithMnet,args=(13,15,1)).start()
+    threading.Thread(target=getMusicFromDJWithMnet,args=(15,17,1)).start()
+    threading.Thread(target=getMusicFromDJWithMnet,args=(17,19,1)).start()
+    threading.Thread(target=getMusicFromDJWithMnet,args=(19,21,1)).start()
+    #dj_json_list = getMusicFromDJWithMnet(9,10,1)
 
